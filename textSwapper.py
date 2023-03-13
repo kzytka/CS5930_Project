@@ -8,11 +8,6 @@ with open('iranCensorship.csv', newline='') as csvfile:
 
     #create a dictionary reader
     reader = csv.DictReader(csvfile) #this is a dictionary
-
-    #print the file by each row
-    #for row in reader:
-    #    print(row['censoredWord'], row['translation'], 
-    #          row['replacementWord'], row['translation2'])
         
     #open the file that is to be overwritten
     with open('test.txt', 'r') as test:
@@ -27,11 +22,9 @@ with open('iranCensorship.csv', newline='') as csvfile:
         if i['censoredWord'] in contents:
                 
             #replace the word
-            contents.replace(i['censoredWord'], i['replacementWord'])
+            contents = contents.replace(i['censoredWord'], i['replacementWord'])
             print(f"overwrote {i['censoredWord']} with {i['replacementWord']}")
-            #print(contents)
     
     #write to the file
     with open('test.txt', 'w') as test:
         test.write(contents)
-        #print(contents)
