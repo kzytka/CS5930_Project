@@ -5,6 +5,7 @@
 # import he bidi algorithm so that the Arabic can be displayed
 
 import csv
+import re
 import arabic_reshaper
 from bidi.algorithm import get_display
 
@@ -54,65 +55,90 @@ def paste():
     text = window.clipboard_get()
     leftText.insert(tk.END, text)
 
-def scramble(leftText, rightText):
-    print("Select All / Copy button pressed!")
+def scrambleE(leftText, rightText):
+    #print("Select All / Copy button pressed!")
     #open the file that has the censored words and the changes
     with open('iranCensorship.csv', newline='', encoding='utf-8') as csvfile:
 
         #create a dictionary reader
         reader = csv.DictReader(csvfile) #this is a dictionary
+        plainText = leftText.get('1.0','end')
 
         #iterate through censored word in dictionary
         for i in reader:
-
-            #check if the word from the dictionary is in the file
-            if i['censoredWord'] in leftText.get('1.0','end'):
                 
-                #replace the word
-                leftText = leftText.insert(tk.END, text.replace(i['censoredWord'],
-                                                                 i['replacementWord']))
+            #replace the word if it was in it
+            plainText = re.sub(i['censoredWord'], i['replacementWord'], plainText,
+                               flags=re.IGNORECASE)
 
-        rightText.insert("1.0", leftText)
+        rightText.insert('1.0', plainText)
 
+def scrambleA(leftText, rightText):
+    #print("Select All / Copy button pressed!")
+    #open the file that has the censored words and the changes
+    with open('iranCensorship.csv', newline='', encoding='utf-8') as csvfile:
+
+        #create a dictionary reader
+        reader = csv.DictReader(csvfile) #this is a dictionary
+        plainText = leftText.get('1.0','end')
+
+        #iterate through censored word in dictionary
+        for i in reader:
+                
+            #replace the word if it was in it
+            plainText = re.sub(i['translation'], i['translation2'], plainText,
+                               flags=re.IGNORECASE)
+
+        rightText.insert('1.0', plainText)
+ 
 
 #generate windows
 window = tk.Tk()
-window.title("TEXT SCRAMBLER - Now with support for Arabic!")
+window.title("TEXT SCRAMBLER - Now with support for Arabic! | جهاز تشويش إذاعي نص - الآن مع دعم للغة العربية!")
 
 #left side of window
 leftFrame = tk.Frame(master=window, relief=tk.RAISED, borderwidth=5, bg="LightBlue3")
 leftFrame.pack() #.pack(side=tk.LEFT) for side-by-side frames
-leftLabel = tk.Label(master=leftFrame, text="Original Text")
+leftLabel = tk.Label(master=leftFrame, text="Original Text | النص الأصلي")
 leftLabel.pack()
 leftText = tk.Text(master=leftFrame)
 leftText.pack()
 
-leftPasteBtn = tk.Button(master=leftFrame, text="Paste Text", width=10, height=1, bg="gray88", fg="black", command=paste, activebackground="gray88")
+leftPasteBtn = tk.Button(master=leftFrame, text="Paste Text | لصق النص", width=12, height=1, bg="gray88", fg="black", command=paste, activebackground="gray88")
 leftPasteBtn.pack(side=tk.LEFT)
 
-leftOpenBtn = tk.Button(master=leftFrame, text="Open File", width=10, height=1, bg="gray88", fg="black", command=open_file, activebackground="gray88")
+leftOpenBtn = tk.Button(master=leftFrame, text="Open File | افتح ملف", width=12, height=1, bg="gray88", fg="black", command=open_file, activebackground="gray88")
 leftOpenBtn.pack(side=tk.LEFT)
 
-leftScrambleBtn = tk.Button(master=leftFrame, text="SCRAMBLE", width=10, height=1, bg="gray88", fg="black", command=lambda: scramble(leftText, rightText), activebackground="gray88")
+#arabic
+leftScrambleBtnA = tk.Button(master=leftFrame, text="تزاحم", width=6, height=1, bg="gray88", fg="black", command=lambda: scrambleA(leftText, rightText), activebackground="gray88")
+leftScrambleBtnA.pack(side=tk.RIGHT)
+
+#english
+leftScrambleBtn = tk.Button(master=leftFrame, text="SCRAMBLE", width=6, height=1, bg="gray88", fg="black", command=lambda: scrambleE(leftText, rightText), activebackground="gray88")
 leftScrambleBtn.pack(side=tk.RIGHT)
 
 
 #right side of window
 rightFrame = tk.Frame(master=window, relief=tk.RAISED, borderwidth=5, bg="LightBlue3")
 rightFrame.pack() #.pack(side=tk.RIGHT) for side-by-side frames
-rightLabel = tk.Label(master=rightFrame, text="SCRAMBLED Text")
+rightLabel = tk.Label(master=rightFrame, text="SCRAMBLED Text | نص مخلوط")
 rightLabel.pack()
 rightText = tk.Text(master=rightFrame)
 rightText.pack()
 
-rightCopyBtn = tk.Button(master=rightFrame, text="Select All & Copy", width=15, height=1, bg="gray88", fg="black", command=copy, activebackground="gray88")
+#testLabel = tk.Label(master=rightFrame, text=leftText)
+#testLabel.pack()
+
+rightCopyBtn = tk.Button(master=rightFrame, text="Select All & Copy | حدد الكل ونسخ", width=20, height=1, bg="gray88", fg="black", command=copy, activebackground="gray88")
 rightCopyBtn.pack(side=tk.LEFT)
 
-rightSaveBtn = tk.Button(master=rightFrame, text="Save Text as File", width=15, height=1, bg="gray88", fg="black", command=save_file, activebackground="gray88")
+rightSaveBtn = tk.Button(master=rightFrame, text="Save Text as File | حفظ النص كملف", width=20, height=1, bg="gray88", fg="black", command=save_file, activebackground="gray88")
 rightSaveBtn.pack(side=tk.LEFT)
 
 window.mainloop() #<- always needs to be last line of code, runs event handler
 
+'''
     #add scramble code here
     #add scramble code here
     #add scramble code here   
@@ -154,3 +180,4 @@ rightSaveBtn = tk.Button(master=rightFrame, text="Save Text as File", width=15, 
 rightSaveBtn.pack(side=tk.LEFT)
 
 window.mainloop() #<- always needs to be last line of code, runs event handler
+'''
