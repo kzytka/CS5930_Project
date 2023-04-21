@@ -64,7 +64,9 @@ def scrambleE(leftText, rightText):
 
         #create a dictionary reader
         reader = csv.DictReader(csvfile) #this is a dictionary
-        plainText = leftText.get('1.0','end')
+        input = leftText.get('1.0','end')
+
+        plainText = re.sub('[,.!?]', ' ', input)
 
         #iterate through censored word in dictionary
         for i in reader:
@@ -72,7 +74,7 @@ def scrambleE(leftText, rightText):
             #replace the word if it was in it
             plainText = re.sub(i['censoredWord'], i['replacementWord'], plainText,
                                flags=re.IGNORECASE)
-
+        
         rightText.insert('1.0', plainText)
 
 def scrambleA(leftText, rightText):
